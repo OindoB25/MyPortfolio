@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bernadate Achieng Oindo — Digital Solutions & Web Services</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f4ef;
+    --ink: #1a1612;
+    --white: #ffffff;
+    --rose: #c94f6d;
+    --rose-light: #e07090;
+    --rose-pale: #f9e8ed;
+    --plum: #4a2040;
+    --plum-light: #6b3060;
+    --sand: #e8d8c4;
+    --muted: #8a7f78;
+    --warm-grey: #f0ebe4;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  .cursor {
+    position: fixed; width: 10px; height: 10px;
+    background: var(--rose); border-radius: 50%;
+    pointer-events: none; z-index: 9999;
+    transform: translate(-50%,-50%);
+  }
+  .cursor-ring {
+    position: fixed; width: 34px; height: 34px;
+    border: 1.5px solid var(--rose); border-radius: 50%;
+    pointer-events: none; z-index: 9998;
+    transform: translate(-50%,-50%); opacity: 0.4;
+    transition: width .3s, height .3s, opacity .3s;
+  }
+  .cursor-ring.expanded { width: 56px; height: 56px; opacity: 0.2; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 1.3rem 2.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(247,244,239,0.9);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(201,79,109,0.12);
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: 0.95rem; letter-spacing: 0.05em;
+    color: var(--plum); text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    color: var(--ink); text-decoration: none;
+    font-size: 0.84rem; opacity: 0.6;
+    transition: opacity .2s, color .2s;
+  }
+  .nav-links a:hover { opacity: 1; color: var(--rose); }
+  .nav-cta {
+    background: var(--rose); color: var(--white) !important;
+    padding: .48rem 1.3rem; border-radius: 2rem;
+    opacity: 1 !important; font-weight: 500;
+    transition: background .2s !important;
+  }
+  .nav-cta:hover { background: var(--rose-light) !important; }
+
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+  .hamburger span { width: 24px; height: 2px; background: var(--ink); border-radius: 2px; }
+
+  .mobile-nav {
+    display: none; position: fixed; inset: 0;
+    background: var(--plum); z-index: 99;
+    flex-direction: column; align-items: center; justify-content: center; gap: 2rem;
+  }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a {
+    font-family: 'Syne', sans-serif; font-size: 2rem;
+    font-weight: 700; color: var(--white); text-decoration: none;
+    transition: color .2s;
+  }
+  .mobile-nav a:hover { color: var(--rose-light); }
+  .mobile-nav-close {
+    position: absolute; top: 1.5rem; right: 2rem;
+    font-size: 2rem; cursor: pointer; color: rgba(255,255,255,0.4);
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    align-items: center; padding: 8rem 6vw 5rem; gap: 4rem;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; bottom: -10%; left: -5%;
+    width: 55vw; height: 70vh;
+    background: radial-gradient(ellipse, rgba(201,79,109,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: var(--rose-pale); border: 1px solid rgba(201,79,109,0.25);
+    border-radius: 2rem; padding: .4rem 1rem;
+    font-size: .73rem; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--rose); margin-bottom: 1.8rem;
+    animation: fadeUp .7s .1s both;
+  }
+  .hero-badge::before {
+    content: ''; width: 6px; height: 6px;
+    background: var(--rose); border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+  .hero-name {
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: clamp(2.6rem, 5vw, 4.8rem);
+    line-height: 1.03; letter-spacing: -.02em;
+    animation: fadeUp .7s .2s both;
+  }
+  .hero-name span { color: var(--rose); }
+
+  .hero-tagline {
+    margin-top: 1.2rem;
+    font-size: clamp(.95rem, 1.6vw, 1.15rem);
+    font-weight: 300; color: rgba(26,22,18,.6);
+    line-height: 1.7; max-width: 460px;
+    animation: fadeUp .7s .3s both;
+  }
+
+  .hero-actions {
+    margin-top: 2.5rem; display: flex; gap: 1rem; flex-wrap: wrap;
+    animation: fadeUp .7s .4s both;
+  }
+  .btn-primary {
+    background: var(--rose); color: var(--white);
+    padding: .85rem 2rem; border-radius: 3rem;
+    font-weight: 600; font-size: .9rem; text-decoration: none;
+    letter-spacing: .04em; display: inline-flex; align-items: center; gap: .5rem;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(201,79,109,.3); }
+  .btn-secondary {
+    border: 1.5px solid rgba(26,22,18,.2); color: var(--ink);
+    padding: .85rem 2rem; border-radius: 3rem; font-size: .9rem;
+    text-decoration: none; letter-spacing: .04em;
+    transition: border-color .2s, color .2s;
+  }
+  .btn-secondary:hover { border-color: var(--rose); color: var(--rose); }
+
+  .hero-stats {
+    display: flex; gap: 2.5rem; margin-top: 3rem;
+    animation: fadeUp .7s .5s both;
+  }
+  .stat-num {
+    font-family: 'Syne', sans-serif; font-size: 2rem;
+    font-weight: 700; color: var(--plum);
+  }
+  .stat-label { font-size: .75rem; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; margin-top: .2rem; }
+
+  .hero-visual {
+    position: relative; display: flex; justify-content: center; align-items: center;
+    animation: fadeIn 1s .4s both;
+  }
+  .hero-img-frame {
+    position: relative;
+    width: clamp(270px, 36vw, 440px); aspect-ratio: 3/4;
+    border-radius: 120px 4px 120px 4px; overflow: hidden;
+    border: 1px solid rgba(201,79,109,.2);
+    box-shadow: 0 40px 80px rgba(74,32,64,.12);
+  }
+  .hero-img-frame img {
+    width: 100%; height: 100%; object-fit: cover;
+    filter: contrast(1.04) saturate(.95);
+    transition: transform .6s;
+  }
+  .hero-img-frame:hover img { transform: scale(1.04); }
+  .hero-img-frame::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 50%, rgba(74,32,64,.35) 100%);
+  }
+
+  .float-badge {
+    position: absolute; background: var(--white);
+    border: 1px solid rgba(201,79,109,.2); border-radius: 1rem;
+    padding: .7rem 1.1rem; font-size: .75rem;
+    display: flex; align-items: center; gap: .5rem;
+    white-space: nowrap; color: var(--ink);
+    box-shadow: 0 8px 24px rgba(74,32,64,.08);
+    animation: float 4s ease-in-out infinite;
+  }
+  .float-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #3cb97a; }
+  .float-badge-1 { bottom: 14%; left: -7%; }
+  .float-badge-2 { top: 16%; right: -4%; animation-delay: 2s; }
+
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+  /* MARQUEE */
+  .marquee-section {
+    background: var(--plum); padding: .9rem 0;
+    overflow: hidden; white-space: nowrap;
+  }
+  .marquee-track { display: inline-flex; animation: marquee 22s linear infinite; }
+  .marquee-item {
+    font-family: 'Syne', sans-serif; font-weight: 700;
+    font-size: .78rem; letter-spacing: .12em;
+    text-transform: uppercase; color: rgba(255,255,255,.8);
+    padding: 0 2.5rem;
+  }
+  .marquee-sep { color: var(--rose-light); opacity: .7; }
+  @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+  section { padding: 7rem 6vw; }
+
+  .section-label {
+    font-size: .7rem; letter-spacing: .2em;
+    text-transform: uppercase; color: var(--rose);
+    margin-bottom: .8rem;
+    display: flex; align-items: center; gap: .8rem;
+  }
+  .section-label::after { content: ''; flex: 1; max-width: 36px; height: 1px; background: var(--rose); opacity: .4; }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700; line-height: 1.1; letter-spacing: -.02em; color: var(--ink);
+  }
+  .section-title span { color: var(--rose); }
+
+  /* SERVICES */
+  #services { background: var(--white); }
+  .services-intro { max-width: 520px; margin-bottom: 4rem; }
+  .services-intro .section-label { color: var(--plum); }
+  .services-intro .section-label::after { background: var(--plum); }
+  .services-intro .section-title span { color: var(--plum); }
+
+  .services-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5px; background: rgba(0,0,0,.06); border: 1.5px solid rgba(0,0,0,.06);
+  }
+  .service-card {
+    background: var(--white); padding: 2.5rem 2rem;
+    position: relative; transition: background .3s; overflow: hidden;
+  }
+  .service-card::before {
+    content: ''; position: absolute; bottom: 0; left: 0;
+    width: 100%; height: 3px; background: var(--rose);
+    transform: scaleX(0); transform-origin: left; transition: transform .3s;
+  }
+  .service-card:hover { background: var(--warm-grey); }
+  .service-card:hover::before { transform: scaleX(1); }
+
+  .service-icon {
+    width: 48px; height: 48px; border: 1.5px solid rgba(0,0,0,.1);
+    border-radius: .75rem; display: flex; align-items: center;
+    justify-content: center; font-size: 1.4rem; margin-bottom: 1.5rem;
+    transition: border-color .3s;
+  }
+  .service-card:hover .service-icon { border-color: var(--rose); }
+  .service-title { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: .6rem; }
+  .service-desc { font-size: .87rem; line-height: 1.7; color: #666; }
+  .service-price { margin-top: 1.5rem; font-family: 'Syne', sans-serif; font-size: .88rem; font-weight: 700; color: var(--plum); }
+
+  /* WHY ME */
+  #why {
+    background: var(--plum);
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 6rem; align-items: center; padding: 7rem 6vw;
+  }
+  #why .section-label { color: rgba(255,255,255,.45); }
+  #why .section-label::after { background: rgba(255,255,255,.25); }
+  #why .section-title { color: var(--white); }
+  #why .section-title span { color: var(--rose-light); }
+  .why-content p { color: rgba(255,255,255,.55); line-height: 1.8; margin-bottom: 1.2rem; font-size: .93rem; }
+
+  .why-list { margin-top: 2.5rem; display: flex; flex-direction: column; gap: 1rem; }
+  .why-item {
+    display: flex; align-items: flex-start; gap: 1rem;
+    padding: 1.1rem 1.4rem; border: 1px solid rgba(255,255,255,.1);
+    border-radius: .75rem; transition: border-color .25s, background .25s;
+  }
+  .why-item:hover { border-color: rgba(201,79,109,.4); background: rgba(201,79,109,.07); }
+  .why-item-icon { font-size: 1.3rem; flex-shrink: 0; }
+  .why-item-text strong { display: block; font-size: .88rem; margin-bottom: .2rem; font-family: 'Syne', sans-serif; color: var(--white); }
+  .why-item-text span { font-size: .8rem; color: rgba(255,255,255,.4); line-height: 1.6; }
+
+  .why-visual { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .why-card {
+    background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 1rem; padding: 1.8rem 1.4rem;
+    transition: transform .25s, border-color .25s;
+  }
+  .why-card:hover { transform: translateY(-4px); border-color: rgba(201,79,109,.35); }
+  .why-card:nth-child(2) { margin-top: 2rem; }
+  .why-card:nth-child(4) { margin-top: -2rem; }
+  .why-card-emoji { font-size: 1.8rem; margin-bottom: .8rem; }
+  .why-card h4 { font-family: 'Syne', sans-serif; font-size: .88rem; font-weight: 700; margin-bottom: .4rem; color: var(--white); }
+  .why-card p { font-size: .76rem; color: rgba(255,255,255,.38); line-height: 1.6; }
+
+  /* SKILLS */
+  #skills { background: var(--sand); }
+  #skills .section-label { color: var(--plum); }
+  #skills .section-label::after { background: var(--plum); }
+  #skills .section-title span { color: var(--plum); }
+  .skills-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3.5rem; flex-wrap: wrap; gap: 1.5rem; }
+  .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: .8rem; }
+  .skill-pill {
+    background: rgba(255,255,255,.75); border: 1px solid rgba(74,32,64,.1);
+    border-radius: .7rem; padding: 1rem 1.3rem;
+    display: flex; align-items: center; gap: .8rem;
+    font-size: .87rem; transition: background .2s, transform .2s;
+  }
+  .skill-pill:hover { background: var(--white); transform: translateX(4px); }
+  .skill-pill-icon { font-size: 1.15rem; }
+  .skill-pill-name { font-weight: 500; color: var(--ink); }
+  .skill-pill-level {
+    margin-left: auto; font-size: .68rem; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--rose);
+    background: var(--rose-pale); padding: .2rem .6rem; border-radius: 2rem;
+  }
+
+  /* CERTIFICATIONS */
+  #certifications { background: var(--bg); }
+
+  .cert-container {
+    background: var(--white); border: 1px solid rgba(201,79,109,.15);
+    border-radius: 1.5rem; padding: 2.8rem;
+    display: flex; align-items: center; gap: 3rem;
+    margin-top: 2.5rem; position: relative; overflow: hidden;
+    box-shadow: 0 8px 40px rgba(74,32,64,.07);
+  }
+  .cert-container::before {
+    content: ''; position: absolute; top: 0; right: 0;
+    width: 240px; height: 240px;
+    background: radial-gradient(circle, rgba(201,79,109,.05) 0%, transparent 70%);
+  }
+  .cert-badge-visual {
+    flex-shrink: 0; width: 80px; height: 80px;
+    background: linear-gradient(135deg, var(--rose) 0%, var(--plum) 100%);
+    border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 2rem;
+    box-shadow: 0 0 36px rgba(201,79,109,.25);
+  }
+  .cert-details h3 { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700; margin-bottom: .35rem; color: var(--ink); }
+  .cert-details .cert-issuer { color: var(--rose); font-size: .82rem; margin-bottom: .45rem; }
+  .cert-details .cert-date { color: var(--muted); font-size: .78rem; }
+  .cert-details p { color: rgba(26,22,18,.5); font-size: .86rem; line-height: 1.7; margin-top: .8rem; max-width: 480px; }
+
+  .edu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-top: 1.2rem; }
+  .edu-card {
+    background: var(--white); border: 1px solid rgba(74,32,64,.1);
+    border-radius: 1rem; padding: 1.8rem;
+    box-shadow: 0 4px 20px rgba(74,32,64,.05);
+    transition: transform .2s;
+  }
+  .edu-card:hover { transform: translateY(-3px); }
+  .edu-icon { font-size: 1.8rem; margin-bottom: .8rem; }
+  .edu-card h3 { font-family: 'Syne', sans-serif; font-size: .92rem; font-weight: 700; margin-bottom: .3rem; }
+  .edu-school { color: var(--rose); font-size: .78rem; margin-bottom: .3rem; }
+  .edu-year { color: var(--muted); font-size: .76rem; }
+
+  /* CONTACT */
+  #contact { background: var(--white); }
+  #contact .section-label { color: var(--plum); }
+  #contact .section-label::after { background: var(--plum); }
+  #contact .section-title span { color: var(--plum); }
+
+  .contact-layout { display: grid; grid-template-columns: 1.1fr 1fr; gap: 5rem; margin-top: 3.5rem; align-items: start; }
+  .contact-intro h3 { font-family: 'Syne', sans-serif; font-size: 1.45rem; font-weight: 700; margin-bottom: 1rem; line-height: 1.35; }
+  .contact-intro p { color: rgba(26,22,18,.55); line-height: 1.8; font-size: .92rem; margin-bottom: 2rem; }
+
+  .contact-links { display: flex; flex-direction: column; gap: .9rem; }
+  .contact-link {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 1rem 1.3rem; border: 1px solid rgba(74,32,64,.1);
+    border-radius: .8rem; color: var(--ink); text-decoration: none;
+    font-size: .88rem; background: var(--bg);
+    transition: border-color .2s, background .2s, transform .2s;
+  }
+  .contact-link:hover { border-color: var(--rose); background: var(--rose-pale); transform: translateX(4px); }
+  .contact-link-icon { font-size: 1.2rem; flex-shrink: 0; }
+  .contact-link-label { font-size: .68rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: .12rem; }
+  .contact-link-value { font-weight: 500; }
+
+  .cta-box {
+    background: var(--plum); border-radius: 1.5rem; padding: 3rem 2.5rem;
+    text-align: center; position: relative; overflow: hidden;
+  }
+  .cta-box::before {
+    content: ''; position: absolute; top: -40px; right: -40px;
+    width: 180px; height: 180px; background: rgba(201,79,109,.15); border-radius: 50%;
+  }
+  .cta-box::after {
+    content: ''; position: absolute; bottom: -30px; left: -30px;
+    width: 110px; height: 110px; background: rgba(255,255,255,.05); border-radius: 50%;
+  }
+  .cta-box h4 { font-family: 'Syne', sans-serif; font-size: 1.35rem; font-weight: 800; color: var(--white); margin-bottom: .8rem; position: relative; z-index: 1; }
+  .cta-box p { color: rgba(255,255,255,.5); font-size: .87rem; line-height: 1.7; margin-bottom: 2rem; position: relative; z-index: 1; }
+  .cta-box .btn-primary { display: inline-flex; margin: 0 auto; position: relative; z-index: 1; justify-content: center; }
+  .cta-note { margin-top: 1.2rem; font-size: .73rem; color: rgba(255,255,255,.3); position: relative; z-index: 1; }
+
+  footer {
+    background: var(--ink); padding: 2.5rem 6vw;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;
+    border-top: 3px solid var(--rose);
+  }
+  .footer-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: .95rem; color: var(--white); }
+  .footer-copy { color: rgba(255,255,255,.3); font-size: .78rem; }
+  .footer-links { display: flex; gap: 1.5rem; }
+  .footer-links a { color: rgba(255,255,255,.35); text-decoration: none; font-size: .78rem; transition: color .2s; }
+  .footer-links a:hover { color: var(--rose-light); }
+
+  .reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; padding: 7rem 5vw 5rem; gap: 3rem; text-align: center; }
+    .hero-tagline { margin: 1rem auto 0; }
+    .hero-actions { justify-content: center; }
+    .hero-stats { justify-content: center; }
+    .hero-visual { order: -1; }
+    .hero-img-frame { width: clamp(220px, 58vw, 320px); }
+    .float-badge-1 { bottom: 4%; left: 4%; }
+    .float-badge-2 { top: 4%; right: 4%; }
+    #why { grid-template-columns: 1fr; gap: 3rem; }
+    .why-visual { display: none; }
+    .contact-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .cert-container { flex-direction: column; text-align: center; align-items: center; }
+  }
+  @media (max-width: 600px) {
+    nav { padding: 1.1rem 1.3rem; }
+    section { padding: 5rem 5vw; }
+    #why, #contact { padding: 5rem 5vw; }
+    footer { flex-direction: column; text-align: center; }
+    .skills-grid, .services-grid { grid-template-columns: 1fr; }
+    .cert-container { padding: 2rem 1.3rem; }
+    .cta-box { padding: 2rem 1.5rem; }
+    .hero-img-frame { border-radius: 80px 4px 80px 4px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<div class="mobile-nav" id="mobileNav">
+  <span class="mobile-nav-close" id="mobileClose">✕</span>
+  <a href="#services" onclick="closeMobileNav()">Services</a>
+  <a href="#why" onclick="closeMobileNav()">About</a>
+  <a href="#skills" onclick="closeMobileNav()">Skills</a>
+  <a href="#certifications" onclick="closeMobileNav()">Credentials</a>
+  <a href="#contact" onclick="closeMobileNav()">Contact</a>
+</div>
+
+<nav>
+  <a href="#" class="nav-logo">BERNADATE A. OINDO</a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#why">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#certifications">Credentials</a></li>
+    <li><a href="#contact" class="nav-cta">Contact</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-content">
+    <div class="hero-badge">Available for Projects</div>
+    <h1 class="hero-name">
+      Your Business<br>Deserves a<br><span>Stunning Website</span>
+    </h1>
+    <p class="hero-tagline">
+      I'm Bernadate Akinyi Oindo — an ICT specialist and web developer based in Nairobi. I build fast, beautiful websites that turn visitors into paying customers.
+    </p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn-primary">Start Your Project →</a>
+      <a href="#services" class="btn-secondary">View Services</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">5+</div>
+        <div class="stat-label">Languages</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">AI</div>
+        <div class="stat-label">Certified</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Dedicated</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-img-frame">
+      <img src="profile.png" alt="Bernadate Akinyi Oindo" onerror="this.style.background='linear-gradient(135deg,#4a2040,#c94f6d)';this.removeAttribute('src')">
+    </div>
+    <div class="float-badge float-badge-1">
+      <span class="dot"></span><span>Open to new clients</span>
+    </div>
+    <div class="float-badge float-badge-2">🎓 Moringa AI Certified</div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <span class="marquee-item">Web Design</span><span class="marquee-sep">◆</span>
+    <span class="marquee-item">Business Websites</span><span class="marquee-sep">◆</span>
+    <span class="marquee-item">HTML · CSS · JavaScript</span><span class="marquee-sep">◆</span>
+    <span class="marquee-item">AI Integration</span><span class="marquee-sep">◆</span>
+    <span class="marquee-item">ICT Support</span><span class="marquee-sep">◆</span>
+    <span class="marquee-item">Digital Solutions</span><span class="marquee-sep">◆</span>
+    <span class="marquee-item">Nairobi, Kenya</span><span class="marquee-sep">◆</span>
+    <span class="marquee-item">Web Design</span><span class="marquee-sep">◆</span>
+    <span class="marquee-item">Business Websites</span><span class="marquee-sep">◆</span>
+    <span class="marquee-item">HTML · CSS · JavaScript</span><span class="marquee-sep">◆</span>
+    <span class="marquee-item">AI Integration</span><span class="marquee-sep">◆</span>
+    <span class="marquee-item">ICT Support</span><span class="marquee-sep">◆</span>
+    <span class="marquee-item">Digital Solutions</span><span class="marquee-sep">◆</span>
+    <span class="marquee-item">Nairobi, Kenya</span><span class="marquee-sep">◆</span>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="services-intro reveal">
+    <div class="section-label">What I Offer</div>
+    <h2 class="section-title">Services Built for <span>Your Growth</span></h2>
+  </div>
+  <div class="services-grid reveal">
+    <div class="service-card">
+      <div class="service-icon">🌐</div>
+      <div class="service-title">Business Website</div>
+      <p class="service-desc">A professional multi-page website showcasing your brand, products, and contact info. Mobile-friendly and built to impress every visitor.</p>
+      <div class="service-price">Starting from KSh 15,000</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🛒</div>
+      <div class="service-title">Online Shop / Catalogue</div>
+      <p class="service-desc">Let customers browse and order online. A clean product catalogue or shop that makes buying easy and drives more revenue for your business.</p>
+      <div class="service-price">Starting from KSh 25,000</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">📋</div>
+      <div class="service-title">Landing Page</div>
+      <p class="service-desc">One powerful page designed to convert visitors into leads or customers. Perfect for a product launch, event, or new service promotion.</p>
+      <div class="service-price">Starting from KSh 8,000</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🔧</div>
+      <div class="service-title">Website Maintenance</div>
+      <p class="service-desc">Keep your existing website updated, secure, and running smoothly. Content updates, fixes, and improvements on a monthly retainer.</p>
+      <div class="service-price">From KSh 3,000/month</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">📊</div>
+      <div class="service-title">ICT Consultancy</div>
+      <p class="service-desc">Computer setup, software installation, Microsoft Office support, and digital training for your team. Tech made simple for your business.</p>
+      <div class="service-price">Custom Quote</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🤖</div>
+      <div class="service-title">AI-Powered Features</div>
+      <p class="service-desc">Add intelligent chatbots, automated responses, or AI-driven content to your site. Leverage cutting-edge technology for your business advantage.</p>
+      <div class="service-price">Custom Quote</div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY ME -->
+<section id="why">
+  <div class="why-content">
+    <div class="section-label">Why Work With Me</div>
+    <h2 class="section-title">More Than Just a <span>Website</span></h2>
+    <p>I combine solid ICT training with genuine leadership experience and a fresh perspective on what businesses need to stand out online. I'm not just a developer — I'm a problem-solver who listens.</p>
+    <p>Currently completing my Diploma in ICT at Nairobi Institute of Business Studies, I stay ahead — including completing Moringa School's Generative AI Essentials course in 2026.</p>
+    <div class="why-list reveal">
+      <div class="why-item">
+        <span class="why-item-icon">⚡</span>
+        <div class="why-item-text">
+          <strong>Fast Turnaround</strong>
+          <span>Most projects delivered within 1–2 weeks so you can start making money online sooner.</span>
+        </div>
+      </div>
+      <div class="why-item">
+        <span class="why-item-icon">📱</span>
+        <div class="why-item-text">
+          <strong>Mobile-First Design</strong>
+          <span>Every site looks perfect on phones, tablets, and desktops — because your customers use all three.</span>
+        </div>
+      </div>
+      <div class="why-item">
+        <span class="why-item-icon">🤝</span>
+        <div class="why-item-text">
+          <strong>Direct Communication</strong>
+          <span>You work with me directly. No middlemen, no delays. Clear updates throughout your project.</span>
+        </div>
+      </div>
+      <div class="why-item">
+        <span class="why-item-icon">🎓</span>
+        <div class="why-item-text">
+          <strong>Formally Trained</strong>
+          <span>ICT education ensures your website is built properly from the ground up — not just slapped together.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="why-visual reveal">
+    <div class="why-card"><div class="why-card-emoji">📈</div><h4>More Customers</h4><p>A professional online presence makes it easy for people to find and trust your business.</p></div>
+    <div class="why-card"><div class="why-card-emoji">🎨</div><h4>Custom Design</h4><p>No templates. Every site is designed from scratch to match your brand identity.</p></div>
+    <div class="why-card"><div class="why-card-emoji">🔒</div><h4>Reliable & Secure</h4><p>Clean code, tested across devices, with security built in from day one.</p></div><br>
+    <div class="why-card"><div class="why-card-emoji">💬</div><h4>After-Launch Support</h4><p>I don't disappear after delivery. I'm here when you need edits or help.</p></div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="skills-header reveal">
+    <div>
+      <div class="section-label">Tech Stack</div>
+      <h2 class="section-title">Skills and <span>competencies</span></h2>
+    </div>
+  </div>
+  <div class="skills-grid reveal">
+    <div class="skill-pill"><span class="skill-pill-icon">🌐</span><span class="skill-pill-name">HTML5</span><span class="skill-pill-level">Proficient</span></div>
+    <div class="skill-pill"><span class="skill-pill-icon">🎨</span><span class="skill-pill-name">CSS3 & Responsive Design</span><span class="skill-pill-level">Proficient</span></div>
+    <div class="skill-pill"><span class="skill-pill-icon">⚡</span><span class="skill-pill-name">JavaScript</span><span class="skill-pill-level">Proficient</span></div>
+    <div class="skill-pill"><span class="skill-pill-icon">🐍</span><span class="skill-pill-name">Python</span><span class="skill-pill-level">Intermediate</span></div>
+    <div class="skill-pill"><span class="skill-pill-icon">🐘</span><span class="skill-pill-name">PHP</span><span class="skill-pill-level">Intermediate</span></div>
+    <div class="skill-pill"><span class="skill-pill-icon">📊</span><span class="skill-pill-name">Microsoft Office Suite</span><span class="skill-pill-level">Expert</span></div>
+    <div class="skill-pill"><span class="skill-pill-icon">🤖</span><span class="skill-pill-name">Generative AI Tools</span><span class="skill-pill-level">Certified</span></div>
+    <div class="skill-pill"><span class="skill-pill-icon">🖧</span><span class="skill-pill-name">Networking & Systems</span><span class="skill-pill-level">Trained</span></div>
+    <div class="skill-pill"><span class="skill-pill-icon">🔍</span><span class="skill-pill-name">Internet Research</span><span class="skill-pill-level">Expert</span></div>
+    <div class="skill-pill"><span class="skill-pill-icon">🗂️</span><span class="skill-pill-name">Data Entry & Management</span><span class="skill-pill-level">Proficient</span></div>
+    <div class="skill-pill"><span class="skill-pill-icon">💡</span><span class="skill-pill-name">Problem Solving</span><span class="skill-pill-level">Strong</span></div>
+    <div class="skill-pill"><span class="skill-pill-icon">👥</span><span class="skill-pill-name">Team Leadership</span><span class="skill-pill-level">Experienced</span></div>
+  </div>
+</section>
+
+<!-- CERTIFICATIONS -->
+<section id="certifications">
+  <div class="reveal">
+    <div class="section-label">Credentials</div>
+    <h2 class="section-title">Education &amp; <span>Certifications</span></h2>
+  </div>
+  <div class="cert-container reveal">
+    <div class="cert-badge-visual">🏅</div>
+    <div class="cert-details">
+      <h3>Generative AI Essentials for Software Developers</h3>
+      <div class="cert-issuer">Moringa School · Nairobi</div>
+      <div class="cert-date">March 2 – 27, 2026</div>
+      <p>Completed a rigorous, industry-recognized course covering AI fundamentals, prompt engineering, and practical AI integration for software development — staying ahead of the curve.</p>
+    </div>
+  </div>
+  <div class="edu-grid reveal">
+    <div class="edu-card">
+      <div class="edu-icon">🎓</div>
+      <h3>Diploma in ICT <span style="color:var(--rose);font-size:.73rem;font-weight:400">(Ongoing)</span></h3>
+      <div class="edu-school">Nairobi Institute of Business Studies</div>
+     
+    </div>
+    <div class="edu-card">
+      <div class="edu-icon">📚</div>
+      
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="reveal">
+    <div class="section-label">Get In Touch</div>
+    <h2 class="section-title">Let's Build Something <span>Great Together</span></h2>
+  </div>
+  <div class="contact-layout">
+    <div class="contact-intro reveal">
+      <h3>Ready to take your business online? Reach out directly.</h3>
+      <p>Whether you need a brand-new website, a refresh of your existing one, or ICT support for your team — I'd love to hear about your project. Drop me an email or call and let's make it happen.</p>
+      <div class="contact-links">
+        <a href="mailto:bernnieraice@gmail.com" class="contact-link">
+          <span class="contact-link-icon">✉️</span>
+          <div>
+            <div class="contact-link-label">Email</div>
+            <div class="contact-link-value">bernnieraice@gmail.com</div>
+          </div>
+        </a>
+        <a href="tel:+254114653425" class="contact-link">
+          <span class="contact-link-icon">📞</span>
+          <div>
+            <div class="contact-link-label">Phone / WhatsApp</div>
+            <div class="contact-link-value">+254 114 653 425</div>
+          </div>
+        </a>
+        <div class="contact-link" style="cursor:default">
+          <span class="contact-link-icon">📍</span>
+          <div>
+            <div class="contact-link-label">Location</div>
+            <div class="contact-link-value">Nairobi, Kenya</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="cta-box">
+        <h4>Let's Talk About Your Website</h4>
+        <p>Send me an email describing your business and what you'd like your website to achieve. I offer a free initial consultation — no obligations.</p>
+        <a href="mailto:bernnieraice@gmail.com" class="btn-primary">📧 Email me</a>
+        <div class="cta-note">⏱ Typically responds within 24 hours</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">BERNADATE AKINYI OINDO</div>
+  <div class="footer-copy">© 2026 · Nairobi, Kenya · Web & ICT Solutions</div>
+  <div class="footer-links">
+    <a href="#services">Services</a>
+    <a href="#skills">Skills</a>
+    <a href="#certifications">Credentials</a>
+    <a href="mailto:bernnieraice@gmail.com">Email Me</a>
+  </div>
+</footer>
+
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+  });
+  (function anim() {
+    rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    requestAnimationFrame(anim);
+  })();
+  document.querySelectorAll('a, button, .service-card, .why-item, .skill-pill, .contact-link').forEach(el => {
+    el.addEventListener('mouseenter', () => ring.classList.add('expanded'));
+    el.addEventListener('mouseleave', () => ring.classList.remove('expanded'));
+  });
+
+  // Mobile nav
+  document.getElementById('hamburger').addEventListener('click', () => document.getElementById('mobileNav').classList.add('open'));
+  document.getElementById('mobileClose').addEventListener('click', closeMobileNav);
+  function closeMobileNav() { document.getElementById('mobileNav').classList.remove('open'); }
+
+  // Scroll reveal
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 70);
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // Skill pill stagger
+  document.querySelectorAll('.skill-pill').forEach((p, i) => p.style.transitionDelay = (i * 35) + 'ms');
+</script>
+</body>
+</html>
